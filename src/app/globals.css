@@ -17,5 +17,24 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-purple-500 rounded-md
+  @apply bg-purple-500 rounded-md;
+}
+
+.loading {
+  border: 10px solid rgb(36, 36, 36);
+  border-radius: 50%;
+  border-top: 10px solid purple;
+  width: 100px;
+  height: 100px;
+
+  animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

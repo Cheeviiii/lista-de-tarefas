@@ -3,6 +3,7 @@
 import Form_Task from "@/components/form";
 import Tasks from "@/components/tasks";
 import { useEffect, useState } from "react";
+import Loading from "@/components/loading";
 
 interface Task {
   id: number;
@@ -48,7 +49,9 @@ export default function MyApp() {
       <div className="w-full p-5 mt-5 bg-[#2b2b2b] rounded-lg">
         <Form_Task addTasks={addTasks} title={title} setTitle={setTitle} />
         {isLoading ? (
-          <p className="text-center font-bold text-3xl">Carregando...</p>
+          <div className="flex items-center justify-center py-5">
+            <Loading />
+          </div>
         ) : (
           <>
             {tasks.length === 0 ? (
