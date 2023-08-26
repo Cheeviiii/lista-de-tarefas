@@ -1,9 +1,11 @@
 "use client";
 
 import Form_Task from "@/components/form";
+import LoadingCircle from "@/components/loading";
 import Tasks from "@/components/tasks";
 import { useEffect, useState } from "react";
-import Loading from "@/components/loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Task {
   id: number;
@@ -16,54 +18,86 @@ export default function MyApp() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setLoading] = useState(true);
 
+  const addTasks = (e: any) => {
+    e.preventDefault();
+
+    if (title.trim() === "") {
+      return toast.info("Digite alguma tarefa.", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "dark",
+      });
+    }
+
+    try {
+      const newTask: Task = {
+        id: Date.now(),
+        title: title,
+        completed: false,
+      };
+
+      setTasks([...tasks, newTask]);
+      setTitle("");
+
+      toast.success("Tarefa adicionada.", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "dark",
+      });
+
+      return;
+    } catch (e) {
+      return console.error(e);
+    }
+  };
+
   useEffect(() => {
     const storedTasks = localStorage.getItem("tasks");
     if (storedTasks) {
-      setLoading(false);
       setTasks(JSON.parse(storedTasks));
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+    setLoading(false);
   }, [tasks]);
 
-  const addTasks = () => {
-    if (title.trim() === "") {
-      return;
-    }
-
-    const newTask: Task = {
-      id: Date.now(),
-      title: title,
-      completed: false,
-    };
-
-    setTasks([...tasks, newTask]);
-    setTitle("");
-  };
-
   return (
-    <div className="w-[1200px] m-auto p-auto flex flex-col items-center justify-center p-5">
+    <main className="flex flex-col items-center justify-center p-5">
+      <ToastContainer />
       <h1 className="text-4xl font-bold uppercase">Lista de tarefas</h1>
-      <div className="w-full p-5 mt-5 bg-[#2b2b2b] rounded-lg">
+      <div className="p-5 m-5 bg-[#2c2c2c] rounded-3xl">
         <Form_Task addTasks={addTasks} title={title} setTitle={setTitle} />
-        {isLoading ? (
-          <div className="flex items-center justify-center py-5">
-            <Loading />
-          </div>
-        ) : (
-          <>
-            {tasks.length === 0 ? (
-              <p className="text-center font-bold text-3xl">
-                Nenhuma Task foi encontrada!
-              </p>
-            ) : (
-              <Tasks lista_tarefas={tasks} tasks={tasks} setTasks={setTasks} />
-            )}
-          </>
-        )}
+        <section className="flex items-center justify-center">
+          {isLoading ? (
+            <LoadingCircle />
+          ) : (
+            <>
+              {tasks.length === 0 ? (
+                <h1 className="text-3xl font-semibold">
+                  Nenhuma tasks foi encontrada!
+                </h1>
+              ) : (
+                <Tasks
+                  lista_tarefas={tasks}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
+              )}
+            </>
+          )}
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

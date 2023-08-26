@@ -3,6 +3,7 @@ import { GiConfirmed } from "react-icons/gi";
 import { VscError } from "react-icons/vsc";
 
 export default function Tasks({ lista_tarefas, tasks, setTasks }: any) {
+
   const toggleTaskCompletion = (taskId: number) => {
     const updatedTasks = tasks.map((task: any) => {
       if (task.id === taskId) {
